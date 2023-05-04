@@ -74,7 +74,7 @@ public final class SIFTRenderer {
     }
 
 
-    func drawDescriptors(
+    public func drawDescriptors(
         sourceImage: CGImage,
         overlayColor: UIColor = UIColor.black.withAlphaComponent(0.8),
         referenceColor: UIColor = UIColor.green,
