@@ -202,6 +202,7 @@ final class DescriptorTests: SharedTestCase {
                     subScale: 0,
                     scaledCoordinate: .zero,
                     absoluteCoordinate: SIMD2<Float>(x: x, y: y),
+                    normalizedCoordinate: .zero,
                     sigma: s,
                     value: 0
                 ),
