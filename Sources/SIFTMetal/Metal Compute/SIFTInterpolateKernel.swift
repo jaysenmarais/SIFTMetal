@@ -12,7 +12,7 @@ import MetalShaders
 
 final class SIFTInterpolateKernel {
     
-    private let maximumKeypoints = 4096
+    private let maximumKeypoints = SIFT.maxKeypoints
     
     private let computePipelineState: MTLComputePipelineState
 //    private let differenceTextureArray: MTLTexture
@@ -36,6 +36,9 @@ final class SIFTInterpolateKernel {
             function: function
         )
 //        self.differenceTextureArray = device.makeTexture(descriptor: descriptor)!
+
+        // We need Apple4 GPU or greater to use "non-uniform threadgroup size" feature
+        precondition(device.supportsFamily(.apple4))
     }
     
     func encode(

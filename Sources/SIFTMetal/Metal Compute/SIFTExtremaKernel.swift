@@ -22,6 +22,9 @@ final class SIFTExtremaFunction {
         self.computePipelineState = try! device.makeComputePipelineState(
             function: function
         )
+
+        // We need Apple4 GPU or greater to use "non-uniform threadgroup size" feature
+        precondition(device.supportsFamily(.apple4))
     }
     
     func encode(

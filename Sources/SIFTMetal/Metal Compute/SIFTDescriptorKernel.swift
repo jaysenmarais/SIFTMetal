@@ -12,18 +12,24 @@ import MetalShaders
 
 public final class SIFTDescriptorKernel {
 
-    private let maximumKeypoints = 4096
+    private let maximumKeypoints = SIFT.maxKeypoints
     
     private let computePipelineState: MTLComputePipelineState
 
-    public init(device: MTLDevice) {
+    private let scale: Int
+
+    public init(device: MTLDevice, scale: Int) {
         let library = try! device.makeDefaultLibrary(bundle: .metalShaders)
 
         let function = library.makeFunction(name: "siftDescriptors")!
         
+        self.scale = scale
         self.computePipelineState = try! device.makeComputePipelineState(
             function: function
         )
+
+        // We need Apple4 GPU or greater to use "non-uniform threadgroup size" feature
+        precondition(device.supportsFamily(.apple4))
     }
     
     public func encode(
@@ -38,6 +44,7 @@ public final class SIFTDescriptorKernel {
         precondition(gradientTextures.pixelFormat == .rg32Float)
 
         let encoder = commandBuffer.makeComputeCommandEncoder()!
+        encoder.label = "siftDescriptors \(self.scale)"
         encoder.setComputePipelineState(computePipelineState)
         encoder.setBuffer(outputDescriptors.data, offset: 0, index: 0)
         encoder.setBuffer(inputKeypoints.data, offset: 0, index: 1)

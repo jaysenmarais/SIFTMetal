@@ -8,7 +8,7 @@
 import Foundation
 
 
-public struct SIFTKeypoint {
+public struct SIFTKeypoint: Hashable, Codable {
     
     // Index of the level of the difference-of-gaussians pyramid.
     public var octave: Int
@@ -52,6 +52,12 @@ public struct SIFTKeypoint {
         self.normalizedCoordinate = normalizedCoordinate
         self.sigma = sigma
         self.value = value
+    }
+
+    // MARK: - Hashable
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(absoluteCoordinate)
     }
 
 }

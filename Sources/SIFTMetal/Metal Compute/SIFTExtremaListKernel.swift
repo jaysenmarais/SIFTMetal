@@ -32,6 +32,9 @@ final class SIFTExtremaListFunction {
         )
         self.indexBuffer.allocate(1)
         indexBuffer[0] = 0
+
+        // We need Apple4 GPU or greater to use "non-uniform threadgroup size" feature
+        precondition(device.supportsFamily(.apple4))
     }
     
     func encode(

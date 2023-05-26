@@ -32,7 +32,7 @@ final class SIFTOrientationKernel {
     
 //    typealias Parameters = SIFTOrientationKeypoint
     
-    private let maximumKeypoints = 4096
+    private let maximumKeypoints = SIFT.maxKeypoints
     
     private let computePipelineState: MTLComputePipelineState
 
@@ -45,6 +45,9 @@ final class SIFTOrientationKernel {
         self.computePipelineState = try! device.makeComputePipelineState(
             function: function
         )
+
+        // We need Apple4 GPU or greater to use "non-uniform threadgroup size" feature
+        precondition(device.supportsFamily(.apple4))
     }
     
     func encode(

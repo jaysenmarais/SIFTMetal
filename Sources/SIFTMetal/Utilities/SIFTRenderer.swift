@@ -80,7 +80,9 @@ public final class SIFTRenderer {
         referenceColor: UIColor = UIColor.green,
         foundColor: UIColor = UIColor.red,
         referenceDescriptors: [SIFTDescriptor],
-        foundDescriptors: [SIFTDescriptor]
+        foundDescriptors: [SIFTDescriptor],
+        descriptorScale: CGFloat = 1,
+        lineWidth: CGFloat = 0.5
     ) -> UIImage {
         
         let bounds = CGRect(x: 0, y: 0, width: sourceImage.width, height: sourceImage.height)
@@ -101,9 +103,9 @@ public final class SIFTRenderer {
             cgContext.fill([bounds])
             cgContext.restoreGState()
 
-            drawDescriptors(cgContext: cgContext, color: referenceColor, descriptors: referenceDescriptors)
+            drawDescriptors(cgContext: cgContext, color: referenceColor, descriptors: referenceDescriptors, descriptorScale: descriptorScale, lineWidth: lineWidth)
             
-            drawDescriptors(cgContext: cgContext, color: foundColor, descriptors: foundDescriptors)
+            drawDescriptors(cgContext: cgContext, color: foundColor, descriptors: foundDescriptors, descriptorScale: descriptorScale, lineWidth: lineWidth)
             
         }
         return uiImage
@@ -218,12 +220,15 @@ public final class SIFTRenderer {
         cgContext: CGContext,
         at offset: CGPoint = .zero,
         color: UIColor,
-        descriptors: [SIFTDescriptor]
+        descriptors: [SIFTDescriptor],
+        descriptorScale scale: CGFloat = 1,
+        lineWidth: CGFloat = 0.5
     ) {
         cgContext.saveGState()
-        cgContext.setLineWidth(0.5)
+        cgContext.setLineWidth(lineWidth)
         cgContext.setStrokeColor(color.cgColor)
         cgContext.setBlendMode(.screen)
+        let transform = CGAffineTransform(scaleX: scale, y: scale)
         for descriptor in descriptors {
             let keypoint = descriptor.keypoint
             let radius = 1.5 * CGFloat(keypoint.sigma)
@@ -237,15 +242,15 @@ public final class SIFTRenderer {
                 width: radius * 2,
                 height: radius * 2
             )
-            cgContext.addEllipse(in: bounds)
+            cgContext.addEllipse(in: bounds.applying(transform))
             
             // Primary Orientation
-            cgContext.move(to: center)
+            cgContext.move(to: center.applying(transform))
             cgContext.addLine(
                 to: CGPoint(
                     x: center.x + cos(CGFloat(descriptor.theta)) * radius,
                     y: center.y + sin(CGFloat(descriptor.theta)) * radius
-                )
+                ).applying(transform)
             )
             
             //

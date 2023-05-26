@@ -148,6 +148,10 @@ public final class DifferenceOfGaussians {
         
         func encode(commandBuffer: MTLCommandBuffer, inputTexture: MTLTexture) {
             precondition(inputTexture.pixelFormat == .r32Float)
+            commandBuffer.pushDebugGroup("DifferenceOfGaussians")
+            defer {
+                commandBuffer.popDebugGroup()
+            }
             encodeFirstGaussianTexture(
                 commandBuffer: commandBuffer,
                 inputTexture: inputTexture
@@ -162,6 +166,10 @@ public final class DifferenceOfGaussians {
         ) {
             #warning("TODO: Use nearest neighbor scaling")
             logger.info("Encoding gaussian v(\(self.o), 0)")
+            commandBuffer.pushDebugGroup("encodeFirstGaussianTexture")
+            defer {
+                commandBuffer.popDebugGroup()
+            }
             let sourceSize = IntegralSize(
                 width: inputTexture.width,
                 height: inputTexture.height
@@ -202,6 +210,10 @@ public final class DifferenceOfGaussians {
         
         private func encodeOtherGaussianTextures(commandBuffer: MTLCommandBuffer) {
             // logger.info("Encoding gaussian v(\(self.o), \(s)) = G𝜌[\(s - 1) → \(s)] v(\(self.o), \(s - 1))")
+            commandBuffer.pushDebugGroup("encodeOtherGaussianTextures")
+            defer {
+                commandBuffer.popDebugGroup()
+            }
             gaussianBlurFunctions.encode(
                 commandBuffer: commandBuffer,
                 texture: gaussianTextures
@@ -210,6 +222,10 @@ public final class DifferenceOfGaussians {
         
         private func encodeDifferenceTextures(commandBuffer: MTLCommandBuffer) {
 //                logger.info("Encoding difference w(\(self.o), \(i))")
+            commandBuffer.pushDebugGroup("encodeDifferenceTextures")
+            defer {
+                commandBuffer.popDebugGroup()
+            }
             subtractFunction.encode(
                 commandBuffer: commandBuffer,
                 inputTexture: gaussianTextures,

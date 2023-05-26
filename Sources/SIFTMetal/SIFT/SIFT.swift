@@ -53,6 +53,12 @@ private let logger = Logger(
 /// See: https://medium.com/jun94-devpblog/cv-13-scale-invariant-local-feature-extraction-3-sift-315b5de72d48
 ///
 public final class SIFT {
+
+    static let maxKeypoints = 4096 * 8
+
+    static let maxExtrema = 4096 * 8
+
+    static let maxDescriptors = 2048 * 8
     
     public struct Configuration {
         
@@ -156,7 +162,11 @@ public final class SIFT {
             capture(commandQueue: commandQueue, capture: false) {
                 let commandBuffer = commandQueue.makeCommandBuffer()!
                 commandBuffer.label = "siftKeypointsCommandBuffer"
-                
+                commandBuffer.pushDebugGroup("findKeypoints")
+                defer {
+                    commandBuffer.popDebugGroup()
+                }
+
                 dog.encode(
                     commandBuffer: commandBuffer,
                     originalTexture: inputTexture

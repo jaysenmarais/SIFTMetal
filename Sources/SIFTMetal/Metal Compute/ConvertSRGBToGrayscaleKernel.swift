@@ -31,7 +31,7 @@ final class ConvertSRGBToGrayscaleKernel {
         precondition(inputTexture.width == outputTexture.width)
         precondition(inputTexture.height == outputTexture.height)
 //        precondition(inputTexture.pixelFormat == .bgra8Unorm_srgb)
-        precondition(inputTexture.pixelFormat == .bgra8Unorm)
+        precondition(inputTexture.pixelFormat == .bgra8Unorm || inputTexture.pixelFormat == .rgba8Unorm) // HACK: easier to make SIFTMetal accept RGBA and BGRA than to convert RGBA to BGRA
         precondition(outputTexture.pixelFormat == .r32Float)
 
         let encoder = commandBuffer.makeComputeCommandEncoder()!
